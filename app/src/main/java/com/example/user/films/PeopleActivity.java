@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -16,8 +17,10 @@ import retrofit2.Response;
 public class PeopleActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     PeopleAdapter peopleAdapter;
-    List<People>people;
+    List<People>people=new ArrayList<>();
+    List<People>pom;
     Api api;
+    int p;
     private static String PAGE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,18 +32,17 @@ public class PeopleActivity extends AppCompatActivity {
 
         api = ApiClient.getClient().create(Api.class);
 
+        peopleAdapter=new PeopleAdapter(people,getApplicationContext());
+
         for (int i = 1; i < 10; i++) {
-            if (i == 1) {
-                PAGE = null;
-            } else
-                PAGE = "" + i;
+                PAGE =""+i;
             Call<PeopleResponse> call=api.getPeople(PAGE);
             call.enqueue(new Callback<PeopleResponse>() {
                 @Override
                 public void onResponse(Call<PeopleResponse> call, Response<PeopleResponse> response) {
                     people=response.body().getResults();
-                    peopleAdapter=new PeopleAdapter(people,getApplicationContext());
-                    recyclerView.setAdapter(peopleAdapter);
+
+                        peopleAdapter.addItem(people);
                 }
 
                 @Override
@@ -48,6 +50,8 @@ public class PeopleActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
                 }
             });
+            recyclerView.setAdapter(peopleAdapter);
         }
+
     }
 }

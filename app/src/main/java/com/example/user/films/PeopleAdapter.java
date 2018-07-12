@@ -77,6 +77,13 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
         return peopleList.size();
     }
 
+    public void addItem(List<People> people)
+    {
+        peopleList.addAll(people);
+        notifyItemInserted(getItemCount()-1);
+    }
+
+
     class PeopleViewHolder extends RecyclerView.ViewHolder {
         TextView name, height, mass, hairColor, skinColor, eyeColor, birthYear, gender, created, edited, url;
         TableLayout tableLayout;
