@@ -18,9 +18,7 @@ public class PeopleActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     PeopleAdapter peopleAdapter;
     List<People>people=new ArrayList<>();
-    List<People>pom;
     Api api;
-    int p;
     private static String PAGE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
