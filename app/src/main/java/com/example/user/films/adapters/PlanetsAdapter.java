@@ -1,4 +1,4 @@
-package com.example.user.films;
+package com.example.user.films.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import com.example.user.films.Planets;
+import com.example.user.films.R;
 
 import java.util.List;
 
@@ -33,12 +36,13 @@ public class PlanetsAdapter extends RecyclerView.Adapter<PlanetsAdapter.PlanetsV
 
     @Override
     public void onBindViewHolder(@NonNull PlanetsViewHolder planetsViewHolder, final int position) {
-        Planets planets=planetsList.get(currentPosition);
+        Planets planets=planetsList.get(position);
         planetsViewHolder.name.setText(planets.getName());
         planetsViewHolder.rotationPeriod.setText(planets.getRotation_period());
         planetsViewHolder.orbitalPeriod.setText(planets.getOrbital_period());
         planetsViewHolder.diameter.setText(planets.getDiameter());
         planetsViewHolder.climate.setText(planets.getClimate());
+        planetsViewHolder.gravity.setText(planets.getGravity());
         planetsViewHolder.terrain.setText(planets.getTerrain());
         planetsViewHolder.surfaceWater.setText(planets.getSurface_water());
         planetsViewHolder.population.setText(planets.getPopulation());
@@ -71,6 +75,11 @@ public class PlanetsAdapter extends RecyclerView.Adapter<PlanetsAdapter.PlanetsV
        return planetsList.size();
     }
 
+    public void addItem(List<Planets> planets){
+        planetsList.addAll(planets);
+        notifyItemInserted(getItemCount()-1);
+    }
+
     class PlanetsViewHolder extends RecyclerView.ViewHolder{
         TextView name, rotationPeriod, orbitalPeriod, diameter, climate, gravity, terrain, surfaceWater, population, created, edited, url;
         TableLayout tableLayout;
@@ -83,6 +92,7 @@ public class PlanetsAdapter extends RecyclerView.Adapter<PlanetsAdapter.PlanetsV
             orbitalPeriod=itemView.findViewById(R.id.orbitalPeriod);
             diameter=itemView.findViewById(R.id.diameter);
             climate=itemView.findViewById(R.id.climate);
+            gravity=itemView.findViewById(R.id.gravity);
             terrain=itemView.findViewById(R.id.terrain);
             surfaceWater=itemView.findViewById(R.id.surfaceWater);
             population=itemView.findViewById(R.id.population);

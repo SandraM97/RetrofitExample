@@ -1,0 +1,109 @@
+package com.example.user.films.adapters;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TableLayout;
+import android.widget.TextView;
+
+import com.example.user.films.R;
+import com.example.user.films.Vehicles;
+
+import java.nio.charset.CodingErrorAction;
+import java.util.List;
+
+public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.VehiclesViewHolder>{
+
+    List<Vehicles> vehiclesList;
+    Context context;
+
+    private static int currentPosition=0;
+
+    public VehiclesAdapter(List<Vehicles> vehiclesList, Context context) {
+        this.vehiclesList = vehiclesList;
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public VehiclesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_vehicles,viewGroup,false);
+        return new VehiclesAdapter.VehiclesViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull VehiclesViewHolder vehiclesViewHolder, final int position) {
+        Vehicles vehicles=vehiclesList.get(position);
+        vehiclesViewHolder.name.setText(vehicles.getName());
+        vehiclesViewHolder.model.setText(vehicles.getModel());
+        vehiclesViewHolder.manufacturer.setText(vehicles.getManufacturer());
+        vehiclesViewHolder.cost.setText(vehicles.getCost_in_credits());
+        vehiclesViewHolder.length.setText(vehicles.getLength());
+        vehiclesViewHolder.maxspeed.setText(vehicles.getMax_atmosphering_speed());
+        vehiclesViewHolder.crew.setText(vehicles.getCrew());
+        vehiclesViewHolder.passengers.setText(vehicles.getPassengers());
+        vehiclesViewHolder.cargo.setText(vehicles.getCargo_capacity());
+        vehiclesViewHolder.consumables.setText(vehicles.getConsumables());
+        vehiclesViewHolder.vehicleClass.setText(vehicles.getVehicle_class());
+        vehiclesViewHolder.created.setText(vehicles.getCreated());
+        vehiclesViewHolder.edited.setText(vehicles.getEdited());
+        vehiclesViewHolder.url.setText(vehicles.getEdited());
+        vehiclesViewHolder.tableLayout.setVisibility(View.GONE);
+
+        if(currentPosition==position)
+        {
+            Animation sideDown= AnimationUtils.loadAnimation(context,R.anim.slide_down);
+            vehiclesViewHolder.tableLayout.setVisibility(View.VISIBLE);
+            vehiclesViewHolder.tableLayout.setAnimation(sideDown);
+        }
+        vehiclesViewHolder.name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                currentPosition=position;
+                notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return vehiclesList.size();
+    }
+
+    public void addItem(List<Vehicles> vehicles)
+    {
+        vehiclesList.addAll(vehicles);
+        notifyItemInserted(getItemCount()-1);
+    }
+
+    class VehiclesViewHolder extends RecyclerView.ViewHolder {
+
+        TextView name, model, manufacturer, cost, length, maxspeed, crew, passengers, cargo, consumables, vehicleClass, created, edited, url;
+        TableLayout tableLayout;
+        public VehiclesViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            name=itemView.findViewById(R.id.name);
+            model=itemView.findViewById(R.id.model);
+            manufacturer=itemView.findViewById(R.id.manufacturer);
+            cost=itemView.findViewById(R.id.cost);
+            length=itemView.findViewById(R.id.length);
+            maxspeed=itemView.findViewById(R.id.maxAtmoSpeed);
+            crew=itemView.findViewById(R.id.crew);
+            passengers=itemView.findViewById(R.id.passengers);
+            cargo=itemView.findViewById(R.id.cargoCapacity);
+            consumables=itemView.findViewById(R.id.consumables);
+            vehicleClass=itemView.findViewById(R.id.vehicleClass);
+            created=itemView.findViewById(R.id.created);
+            edited=itemView.findViewById(R.id.edited);
+            url=itemView.findViewById(R.id.url);
+            tableLayout=itemView.findViewById(R.id.tableLayout5);
+        }
+    }
+}

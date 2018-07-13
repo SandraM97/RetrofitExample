@@ -7,10 +7,10 @@ public class Vehicles {
     private String model;
     private String manufacturer;
     private String cost_in_credits;
-    private String lenght;
+    private String length;
     private String max_atmosphering_speed;
     private String crew;
-    private String passangers;
+    private String passengers;
     private String cargo_capacity;
     private String consumables;
     private String vehicle_class;
@@ -20,15 +20,15 @@ public class Vehicles {
     private String edited;
     private String url;
 
-    public Vehicles(String name, String model, String manufacturer, String cost_in_credits, String lenght, String max_atmosphering_speed, String crew, String passangers, String cargo_capacity, String consumables, String vehicle_class, String[] pilots, String[] films, String created, String edited, String url) {
+    public Vehicles(String name, String model, String manufacturer, String cost_in_credits, String length, String max_atmosphering_speed, String crew, String passengers, String cargo_capacity, String consumables, String vehicle_class, String[] pilots, String[] films, String created, String edited, String url) {
         this.name = name;
         this.model = model;
         this.manufacturer = manufacturer;
         this.cost_in_credits = cost_in_credits;
-        this.lenght = lenght;
+        this.length = length;
         this.max_atmosphering_speed = max_atmosphering_speed;
         this.crew = crew;
-        this.passangers = passangers;
+        this.passengers = passengers;
         this.cargo_capacity = cargo_capacity;
         this.consumables = consumables;
         this.vehicle_class = vehicle_class;
@@ -71,12 +71,12 @@ public class Vehicles {
         this.cost_in_credits = cost_in_credits;
     }
 
-    public String getLenght() {
-        return lenght;
+    public String getLength() {
+        return length;
     }
 
-    public void setLenght(String lenght) {
-        this.lenght = lenght;
+    public void setLength(String length) {
+        this.length = length;
     }
 
     public String getMax_atmosphering_speed() {
@@ -95,12 +95,12 @@ public class Vehicles {
         this.crew = crew;
     }
 
-    public String getPassangers() {
-        return passangers;
+    public String getPassengers() {
+        return passengers;
     }
 
-    public void setPassangers(String passangers) {
-        this.passangers = passangers;
+    public void setPassengers(String passengers) {
+        this.passengers = passengers;
     }
 
     public String getCargo_capacity() {

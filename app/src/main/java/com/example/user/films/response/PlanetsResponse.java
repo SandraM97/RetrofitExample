@@ -1,29 +1,27 @@
-package com.example.user.films;
+package com.example.user.films.response;
+
+import com.example.user.films.Planets;
 
 import java.util.List;
 
-/**
- * Created by sandr on 7/11/2018.
- */
-
-public class PeopleResponse {
-    private Integer count;
+public class PlanetsResponse {
+    private int count;
     private String next;
     private String previous;
-    private List<People> results;
+    private List<Planets> results;
 
-    public PeopleResponse(Integer count, String next, String previous, List<People> results) {
+    public PlanetsResponse(int count, String next, String previous, List<Planets> results) {
         this.count = count;
         this.next = next;
         this.previous = previous;
         this.results = results;
     }
 
-    public Integer getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
@@ -43,11 +41,11 @@ public class PeopleResponse {
         this.previous = previous;
     }
 
-    public List<People> getResults() {
+    public List<Planets> getResults() {
         return results;
     }
 
-    public void setResults(List<People> results) {
+    public void setResults(List<Planets> results) {
         this.results = results;
     }
 }

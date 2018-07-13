@@ -1,4 +1,4 @@
-package com.example.user.films;
+package com.example.user.films.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import com.example.user.films.Films;
+import com.example.user.films.R;
 
 import java.util.List;
 
@@ -28,7 +31,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
     @NonNull
     @Override
     public FilmViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item,viewGroup,false);
+        View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_films,viewGroup,false);
         return new FilmViewHolder(view);
     }
 

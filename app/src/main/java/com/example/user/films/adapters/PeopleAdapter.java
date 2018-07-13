@@ -1,4 +1,4 @@
-package com.example.user.films;
+package com.example.user.films.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import com.example.user.films.People;
+import com.example.user.films.R;
 
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
     @NonNull
     @Override
     public PeopleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_characters, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_people, viewGroup, false);
         return new PeopleViewHolder(view);
     }
 
@@ -91,18 +94,17 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
 
         PeopleViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.name);
-            height = (TextView) itemView.findViewById(R.id.height);
-            mass = (TextView) itemView.findViewById(R.id.mass);
-
-            hairColor = (TextView) itemView.findViewById(R.id.hairColor);
-            skinColor = (TextView) itemView.findViewById(R.id.skinColor);
-            eyeColor = (TextView) itemView.findViewById(R.id.eyeColor);
-            birthYear=itemView.findViewById(R.id.birthYear);
-            gender=itemView.findViewById(R.id.gender);
-            created=itemView.findViewById(R.id.created);
-            edited=itemView.findViewById(R.id.edited);
-            url=itemView.findViewById(R.id.url);
+            name = itemView.findViewById(R.id.name);
+            height = itemView.findViewById(R.id.height);
+            mass = itemView.findViewById(R.id.mass);
+            hairColor = itemView.findViewById(R.id.hairColor);
+            skinColor = itemView.findViewById(R.id.skinColor);
+            eyeColor = itemView.findViewById(R.id.eyeColor);
+            birthYear = itemView.findViewById(R.id.birthYear);
+            gender = itemView.findViewById(R.id.gender);
+            created =itemView.findViewById(R.id.created);
+            edited = itemView.findViewById(R.id.edited);
+            url = itemView.findViewById(R.id.url);
 
 
             tableLayout = (TableLayout) itemView.findViewById(R.id.tableLayout2);
