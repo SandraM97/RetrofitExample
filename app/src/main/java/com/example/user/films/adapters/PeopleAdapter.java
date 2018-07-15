@@ -13,85 +13,185 @@ import android.widget.TextView;
 
 import com.example.user.films.People;
 import com.example.user.films.R;
+import com.example.user.films.response.PeopleResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by sandr on 7/11/2018.
  */
 
-public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleViewHolder> {
+public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
 
     private List<People> peopleList;
     private Context context;
 
     private static int currentPosition = 0;
+    private boolean isLoadingAdded = false;
 
-    public PeopleAdapter(List<People> peopleList, Context context) {
-        this.peopleList = peopleList;
+    public PeopleAdapter(Context context) {
+        this.peopleList = new ArrayList<>();
         this.context = context;
+    }
+
+    public List<People> getPeopleList() {
+        return peopleList;
+    }
+
+    public void setPeopleList(List<People> peopleList) {
+        this.peopleList = peopleList;
     }
 
     @NonNull
     @Override
-    public PeopleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_people, viewGroup, false);
-        return new PeopleViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        RecyclerView.ViewHolder viewHolder=null;
+        LayoutInflater layoutInflater=LayoutInflater.from(viewGroup.getContext());
+
+        switch (viewType)
+        {
+            case ITEM:
+                viewHolder=getViewHolder(viewGroup,layoutInflater);
+                break;
+            case LOADING:
+                View v2 = layoutInflater.inflate(R.layout.item_progress, viewGroup, false);
+                viewHolder = new LoadingVH(v2);
+                break;
+        }
+        return viewHolder;
     }
 
+    @NonNull
+    private RecyclerView.ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
+
+        RecyclerView.ViewHolder viewHolder;
+        View v1 = inflater.inflate(R.layout.item_list_people, parent, false);
+        viewHolder = new PeopleViewHolder(v1);
+        return viewHolder;
+
+    }
     @Override
-    public void onBindViewHolder(final PeopleViewHolder peopleViewHolder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         People people = peopleList.get(position);
-        peopleViewHolder.name.setText(people.getName());
-        peopleViewHolder.height.setText(people.getHeight());
-        peopleViewHolder.mass.setText(people.getMass());
-        peopleViewHolder.hairColor.setText(people.getHair_color());
-        peopleViewHolder.skinColor.setText(people.getSkin_color());
-        peopleViewHolder.eyeColor.setText(people.getEye_color());
-        peopleViewHolder.birthYear.setText(people.getBirth_year());
-        peopleViewHolder.gender.setText(people.getGender());
-        peopleViewHolder.created.setText(people.getCreated());
-        peopleViewHolder.edited.setText(people.getEdited());
-        peopleViewHolder.url.setText(people.getUrl());
+
+        switch (getItemViewType(position)){
+
+            case ITEM:
+                final PeopleViewHolder peopleViewHolder=(PeopleViewHolder)holder;
+                peopleViewHolder.name.setText(people.getName());
+                peopleViewHolder.height.setText(people.getHeight());
+                peopleViewHolder.mass.setText(people.getMass());
+                peopleViewHolder.hairColor.setText(people.getHair_color());
+                peopleViewHolder.skinColor.setText(people.getSkin_color());
+                peopleViewHolder.eyeColor.setText(people.getEye_color());
+                peopleViewHolder.birthYear.setText(people.getBirth_year());
+                peopleViewHolder.gender.setText(people.getGender());
+                peopleViewHolder.created.setText(people.getCreated());
+                peopleViewHolder.edited.setText(people.getEdited());
+                peopleViewHolder.url.setText(people.getUrl());
 
 
-        peopleViewHolder.tableLayout.setVisibility(View.GONE);
+                /*peopleViewHolder.tableLayout.setVisibility(View.GONE);
 
-        if (currentPosition == position) {
-            Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
+                if (currentPosition == position) {
+                    Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
 
-            peopleViewHolder.tableLayout.setVisibility(View.VISIBLE);
+                    peopleViewHolder.tableLayout.setVisibility(View.VISIBLE);
 
-            peopleViewHolder.tableLayout.startAnimation(slideDown);
+                    peopleViewHolder.tableLayout.startAnimation(slideDown);
+                }
+
+                peopleViewHolder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentPosition = position;
+
+                        notifyDataSetChanged();
+                    }
+                });*/
+                break;
+
+            case LOADING: //do nothing
+                break;
         }
 
-        peopleViewHolder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentPosition = position;
-
-                notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        return peopleList.size();
+        return peopleList==null? 0: peopleList.size();
     }
 
-    public void addItem(List<People> people)
+    @Override
+    public int getItemViewType(int position) {
+        return (position==peopleList.size()-1&&isLoadingAdded)?LOADING:ITEM;
+    }
+
+    /*public void addItem(List<People> people)
     {
         peopleList.addAll(people);
-        notifyItemInserted(getItemCount()-1);
+        notifyItemInserted(peopleList.size()-1);
+    }*/
+    public void add(People p) {
+        peopleList.add(p);
+        notifyItemInserted(peopleList.size() - 1);
     }
+
+    public void addAll(List<People> people) {
+        for (People p : people) {
+            add(p);
+        }
+    }
+
+    public void remove(People people) {
+        int position = peopleList.indexOf(people);
+        if (position > -1) {
+            peopleList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        isLoadingAdded = false;
+        while (getItemCount() > 0) {
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new People());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+
+        int position = peopleList.size() - 1;
+        People item = getItem(position);
+
+        if (item != null) {
+            peopleList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public People getItem(int position) {
+        return peopleList.get(position);
+    }
+
 
 
     class PeopleViewHolder extends RecyclerView.ViewHolder {
         TextView name, height, mass, hairColor, skinColor, eyeColor, birthYear, gender, created, edited, url;
         TableLayout tableLayout;
         RecyclerView films, starships, vehicles, species;
-
         PeopleViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
@@ -110,4 +210,17 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
             tableLayout = (TableLayout) itemView.findViewById(R.id.tableLayout2);
         }
     }
+    protected class LoadingVH extends RecyclerView.ViewHolder {
+
+
+
+        public LoadingVH(View itemView) {
+
+            super(itemView);
+
+        }
+
+    }
+
+
 }

@@ -40,6 +40,9 @@ public class People {
         this.url = url;
     }
 
+    public People() {
+    }
+
     public String getName() {
         return name;
     }

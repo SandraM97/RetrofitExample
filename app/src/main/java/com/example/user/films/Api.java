@@ -15,8 +15,8 @@ public interface Api {
     @GET("api/films/")
     Call<FilmResponse> getFilms();
 
-    @GET("/api/people/")
-    Call<PeopleResponse> getPeople(@Query("page") String api_key);
+    @GET("api/people/")
+    Call<PeopleResponse> getPeople(@Query("page") Integer pageIndex);
 
     @GET("/api/planets/")
     Call<PlanetsResponse> getPlanets(@Query("page") String api_key);
@@ -26,6 +26,7 @@ public interface Api {
 
     @GET("/api/vehicles/")
     Call<VehiclesResponse> getVehicles(@Query("page") String api_key);
+
     @GET("/api/starships/")
     Call<StartshipsResponse> getStarships(@Query("page") String api_key);
 

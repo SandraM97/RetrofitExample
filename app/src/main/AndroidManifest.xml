@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.StarshipsActivity">
+        <activity android:name=".activities.PeopleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.PeopleActivity"></activity>
+        <activity android:name=".activities.StarshipsActivity"></activity>
         <activity android:name=".activities.PlanetsActivity"></activity>
         <activity android:name=".activities.SpeciesActivity"></activity>
         <activity android:name=".activities.VehiclesActivity"></activity>
