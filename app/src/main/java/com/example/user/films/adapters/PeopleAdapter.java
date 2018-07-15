@@ -2,6 +2,7 @@ package com.example.user.films.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +33,8 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static int currentPosition = 0;
     private boolean isLoadingAdded = false;
 
-    public PeopleAdapter(Context context) {
-        this.peopleList = new ArrayList<>();
+    public PeopleAdapter(List<People> people,Context context) {
+        this.peopleList = people;
         this.context = context;
     }
 
@@ -94,7 +95,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 peopleViewHolder.url.setText(people.getUrl());
 
 
-                /*peopleViewHolder.tableLayout.setVisibility(View.GONE);
+                peopleViewHolder.tableLayout.setVisibility(View.GONE);
 
                 if (currentPosition == position) {
                     Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
@@ -111,7 +112,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                         notifyDataSetChanged();
                     }
-                });*/
+                });
                 break;
 
             case LOADING: //do nothing
@@ -130,11 +131,6 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return (position==peopleList.size()-1&&isLoadingAdded)?LOADING:ITEM;
     }
 
-    /*public void addItem(List<People> people)
-    {
-        peopleList.addAll(people);
-        notifyItemInserted(peopleList.size()-1);
-    }*/
     public void add(People p) {
         peopleList.add(p);
         notifyItemInserted(peopleList.size() - 1);

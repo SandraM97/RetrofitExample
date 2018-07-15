@@ -40,8 +40,7 @@ public class PeopleActivity extends AppCompatActivity {
     // indicates the current page which Pagination is fetching.
     private int currentPage = PAGE_START;
     LinearLayoutManager linearLayoutManager;
-    List<People>people;
-    private static int pageIndex;
+    List<People>people=new ArrayList<>();
     Api api;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +50,12 @@ public class PeopleActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         progressBar=findViewById(R.id.progressBar);
 
-        peopleAdapter=new PeopleAdapter(this);
+        peopleAdapter=new PeopleAdapter(people,this);
 
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(peopleAdapter);
+
 
         recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override
@@ -64,8 +63,6 @@ public class PeopleActivity extends AppCompatActivity {
                 isLoading = true;
 
                 currentPage += 1;
-
-
 
                 // mocking network delay for API call
 
@@ -113,6 +110,7 @@ public class PeopleActivity extends AppCompatActivity {
         }, 1000);
         api = ApiClient.getClient().create(Api.class);
         loadFirstPage();
+        recyclerView.setAdapter(peopleAdapter);
     }
 
 
@@ -120,32 +118,6 @@ public class PeopleActivity extends AppCompatActivity {
         return api.getPeople(currentPage);
     }
 
-        /*for (int i = 1; i < 10; i++) {
-               pageIndex=i;
-            Call<PeopleResponse> call=api.getPeople(pageIndex);
-            call.enqueue(new Callback<PeopleResponse>() {
-                @Override
-                public void onResponse(Call<PeopleResponse> call, Response<PeopleResponse> response) {
-                    try {
-                        people=response.body().getResults();
-
-                        peopleAdapter.addItem(people);
-                    }
-                    catch (NullPointerException e)
-                    {
-                        e.getMessage();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<PeopleResponse> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-                }
-            });
-            recyclerView.setAdapter(peopleAdapter);
-        }
-
-    }*/
     private List<People> fetchResults(Response<PeopleResponse> response){
         PeopleResponse peopleResponse=response.body();
         return peopleResponse.getResults();
