@@ -41,6 +41,8 @@ public class Starships {
         this.url = url;
     }
 
+    public Starships(){}
+
     public String getName() {
         return name;
     }

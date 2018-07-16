@@ -35,6 +35,7 @@ public class Films {
         this.edited = edited;
         this.url = url;
     }
+    public Films(){}
 
     public String getTitle() {
         return title;

@@ -37,6 +37,8 @@ public class Planets {
         this.url = url;
     }
 
+    public Planets(){}
+
     public String getName() {
         return name;
     }

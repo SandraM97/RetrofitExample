@@ -19,15 +19,15 @@ public interface Api {
     Call<PeopleResponse> getPeople(@Query("page") Integer pageIndex);
 
     @GET("/api/planets/")
-    Call<PlanetsResponse> getPlanets(@Query("page") String api_key);
+    Call<PlanetsResponse> getPlanets(@Query("page") Integer pageIndex);
 
     @GET("/api/species/")
-    Call<SpeciesResponse> getSpecies(@Query("page") String api_key);
+    Call<SpeciesResponse> getSpecies(@Query("page") Integer pageIndex);
 
     @GET("/api/vehicles/")
-    Call<VehiclesResponse> getVehicles(@Query("page") String api_key);
+    Call<VehiclesResponse> getVehicles(@Query("page") Integer pageIndex);
 
     @GET("/api/starships/")
-    Call<StartshipsResponse> getStarships(@Query("page") String api_key);
+    Call<StartshipsResponse> getStarships(@Query("page") Integer pageIndex);
 
 }

@@ -16,7 +16,11 @@ import com.example.user.films.Starships;
 
 import java.util.List;
 
-public class StarshipAdapter extends RecyclerView.Adapter<StarshipAdapter.StarshipViewHolder>{
+public class StarshipAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
+    private boolean isLoadingAdded = false;
     List<Starships> starshipsList;
     Context context;
     private static int currentPosition=0;
@@ -28,57 +32,137 @@ public class StarshipAdapter extends RecyclerView.Adapter<StarshipAdapter.Starsh
 
     @NonNull
     @Override
-    public StarshipViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_starships,viewGroup,false);
-        return new StarshipAdapter.StarshipViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        RecyclerView.ViewHolder viewHolder=null;
+        LayoutInflater layoutInflater=LayoutInflater.from(viewGroup.getContext());
+
+        switch (viewType)
+        {
+            case ITEM:
+                viewHolder=getViewHolder(viewGroup,layoutInflater);
+                break;
+            case LOADING:
+                View v2 = layoutInflater.inflate(R.layout.item_progress, viewGroup, false);
+                viewHolder = new LoadingVH(v2);
+                break;
+        }
+        return viewHolder;
+    }
+    @NonNull
+    private RecyclerView.ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
+
+        RecyclerView.ViewHolder viewHolder;
+        View v1 = inflater.inflate(R.layout.item_list_starships, parent, false);
+        viewHolder = new StarshipViewHolder(v1);
+        return viewHolder;
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StarshipViewHolder starshipViewHolder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         Starships starships=starshipsList.get(position);
-        starshipViewHolder.name.setText(starships.getName());
-        starshipViewHolder.model.setText(starships.getModel());
-        starshipViewHolder.manufacturer.setText(starships.getManufacturer());
-        starshipViewHolder.cost.setText(starships.getCost_in_credits());
-        starshipViewHolder.length.setText(starships.getLength());
-        starshipViewHolder.maxspeed.setText(starships.getMax_atmosphering_speed());
-        starshipViewHolder.crew.setText(starships.getCrew());
-        starshipViewHolder.passengers.setText(starships.getPassengers());
-        starshipViewHolder.cargo.setText(starships.getCargo_capacity());
-        starshipViewHolder.consumables.setText(starships.getConsumables());
-        starshipViewHolder.hyperDrieRating.setText(starships.getHyperdrive_rating());
-        starshipViewHolder.mglt.setText(starships.getMGLT());
-        starshipViewHolder.starshipClass.setText(starships.getStarship_class());
-        starshipViewHolder.created.setText(starships.getCreated());
-        starshipViewHolder.edited.setText(starships.getEdited());
-        starshipViewHolder.url.setText(starships.getUrl());
-        starshipViewHolder.tableLayout.setVisibility(View.GONE);
+        switch (getItemViewType(position)){
+            case ITEM:
+                StarshipViewHolder starshipViewHolder=(StarshipViewHolder)holder;
+                starshipViewHolder.name.setText(starships.getName());
+                starshipViewHolder.model.setText(starships.getModel());
+                starshipViewHolder.manufacturer.setText(starships.getManufacturer());
+                starshipViewHolder.cost.setText(starships.getCost_in_credits());
+                starshipViewHolder.length.setText(starships.getLength());
+                starshipViewHolder.maxspeed.setText(starships.getMax_atmosphering_speed());
+                starshipViewHolder.crew.setText(starships.getCrew());
+                starshipViewHolder.passengers.setText(starships.getPassengers());
+                starshipViewHolder.cargo.setText(starships.getCargo_capacity());
+                starshipViewHolder.consumables.setText(starships.getConsumables());
+                starshipViewHolder.hyperDrieRating.setText(starships.getHyperdrive_rating());
+                starshipViewHolder.mglt.setText(starships.getMGLT());
+                starshipViewHolder.starshipClass.setText(starships.getStarship_class());
+                starshipViewHolder.created.setText(starships.getCreated());
+                starshipViewHolder.edited.setText(starships.getEdited());
+                starshipViewHolder.url.setText(starships.getUrl());
+                starshipViewHolder.tableLayout.setVisibility(View.GONE);
 
-        if(currentPosition==position)
-        {
-            Animation slideDown= AnimationUtils.loadAnimation(context,R.anim.slide_down);
-            starshipViewHolder.tableLayout.setVisibility(View.VISIBLE);
-            starshipViewHolder.tableLayout.setAnimation(slideDown);
+                if(currentPosition==position)
+                {
+                    Animation slideDown= AnimationUtils.loadAnimation(context,R.anim.slide_down);
+                    starshipViewHolder.tableLayout.setVisibility(View.VISIBLE);
+                    starshipViewHolder.tableLayout.setAnimation(slideDown);
+                }
+                starshipViewHolder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentPosition=position;
+                        notifyDataSetChanged();
+                    }
+                });
+                break;
+            case LOADING:
+                break;
         }
-        starshipViewHolder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentPosition=position;
-                notifyDataSetChanged();
-            }
-        });
+
     }
 
     @Override
     public int getItemCount() {
-        return starshipsList.size();
+        return starshipsList==null? 0: starshipsList.size();
     }
 
-    public void addItem(List<Starships> starships)
-    {
-        starshipsList.addAll(starships);
-        notifyItemInserted(getItemCount()-1);
+    @Override
+    public int getItemViewType(int position) {
+        return (position==starshipsList.size()-1&&isLoadingAdded)?LOADING:ITEM;
     }
+
+    public void add(Starships starships) {
+        starshipsList.add(starships);
+        notifyItemInserted(getItemCount() - 1);
+    }
+
+    public void addAll(List<Starships> starships) {
+        for (Starships starships1 : starships) {
+            add(starships1);
+        }
+    }
+
+    public void remove(Starships starships) {
+        int position = starshipsList.indexOf(starships);
+        if (position > -1) {
+            starshipsList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        isLoadingAdded = false;
+        while (getItemCount() > 0) {
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new Starships());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+
+        int position = starshipsList.size() - 1;
+        Starships item = getItem(position);
+
+        if (item != null) {
+            starshipsList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public Starships getItem(int position) {
+        return starshipsList.get(position);
+    }
+
 
     class StarshipViewHolder extends RecyclerView.ViewHolder{
 
@@ -104,5 +188,16 @@ public class StarshipAdapter extends RecyclerView.Adapter<StarshipAdapter.Starsh
             url=itemView.findViewById(R.id.url);
             tableLayout=itemView.findViewById(R.id.tableLayout6);
         }
+    }
+    protected class LoadingVH extends RecyclerView.ViewHolder {
+
+
+
+        public LoadingVH(View itemView) {
+
+            super(itemView);
+
+        }
+
     }
 }

@@ -2,7 +2,6 @@ package com.example.user.films.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +13,9 @@ import android.widget.TextView;
 
 import com.example.user.films.People;
 import com.example.user.films.R;
-import com.example.user.films.response.PeopleResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by sandr on 7/11/2018.
- */
 
 public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int ITEM = 0;
@@ -115,7 +109,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 });
                 break;
 
-            case LOADING: //do nothing
+            case LOADING:
                 break;
         }
 
@@ -133,7 +127,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void add(People p) {
         peopleList.add(p);
-        notifyItemInserted(peopleList.size() - 1);
+        notifyItemInserted(getItemCount() - 1);
     }
 
     public void addAll(List<People> people) {
@@ -207,8 +201,6 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
     protected class LoadingVH extends RecyclerView.ViewHolder {
-
-
 
         public LoadingVH(View itemView) {
 

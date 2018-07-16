@@ -39,6 +39,8 @@ public class Vehicles {
         this.url = url;
     }
 
+    public Vehicles(){}
+
     public String getName() {
         return name;
     }

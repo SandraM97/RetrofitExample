@@ -35,6 +35,8 @@ public class Species {
         this.url = url;
     }
 
+    public Species(){}
+
     public String getName() {
         return name;
     }

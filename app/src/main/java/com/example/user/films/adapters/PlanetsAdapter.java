@@ -16,10 +16,12 @@ import com.example.user.films.R;
 
 import java.util.List;
 
-public class PlanetsAdapter extends RecyclerView.Adapter<PlanetsAdapter.PlanetsViewHolder>{
-
+public class PlanetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
     List<Planets> planetsList;
     Context context;
+    private boolean isLoadingAdded = false;
     private static int currentPosition = 0;
 
     public PlanetsAdapter(List<Planets> planetsList, Context context) {
@@ -27,58 +29,148 @@ public class PlanetsAdapter extends RecyclerView.Adapter<PlanetsAdapter.PlanetsV
         this.context = context;
     }
 
+    public List<Planets> getPlanetsList() {
+        return planetsList;
+    }
+
+    public void setPlanetsList(List<Planets> planetsList) {
+        this.planetsList = planetsList;
+    }
+
     @NonNull
     @Override
-    public PlanetsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_planets, viewGroup, false);
-        return new PlanetsAdapter.PlanetsViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        RecyclerView.ViewHolder viewHolder=null;
+        LayoutInflater layoutInflater=LayoutInflater.from(viewGroup.getContext());
+
+        switch (viewType)
+        {
+            case ITEM:
+                viewHolder=getViewHolder(viewGroup,layoutInflater);
+                break;
+            case LOADING:
+                View v2 = layoutInflater.inflate(R.layout.item_progress, viewGroup, false);
+                viewHolder = new LoadingVH(v2);
+                break;
+        }
+        return viewHolder;
+    }
+
+    @NonNull
+    private RecyclerView.ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
+
+        RecyclerView.ViewHolder viewHolder;
+        View v1 = inflater.inflate(R.layout.item_list_planets, parent, false);
+        viewHolder = new PlanetsViewHolder(v1);
+        return viewHolder;
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlanetsViewHolder planetsViewHolder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         Planets planets=planetsList.get(position);
-        planetsViewHolder.name.setText(planets.getName());
-        planetsViewHolder.rotationPeriod.setText(planets.getRotation_period());
-        planetsViewHolder.orbitalPeriod.setText(planets.getOrbital_period());
-        planetsViewHolder.diameter.setText(planets.getDiameter());
-        planetsViewHolder.climate.setText(planets.getClimate());
-        planetsViewHolder.gravity.setText(planets.getGravity());
-        planetsViewHolder.terrain.setText(planets.getTerrain());
-        planetsViewHolder.surfaceWater.setText(planets.getSurface_water());
-        planetsViewHolder.population.setText(planets.getPopulation());
-        planetsViewHolder.created.setText(planets.getCreated());
-        planetsViewHolder.edited.setText(planets.getEdited());
-        planetsViewHolder.url.setText(planets.getUrl());
+        switch (getItemViewType(position)){
+            case ITEM:
+                final PlanetsViewHolder planetsViewHolder=(PlanetsViewHolder)holder;
+                planetsViewHolder.name.setText(planets.getName());
+                planetsViewHolder.rotationPeriod.setText(planets.getRotation_period());
+                planetsViewHolder.orbitalPeriod.setText(planets.getOrbital_period());
+                planetsViewHolder.diameter.setText(planets.getDiameter());
+                planetsViewHolder.climate.setText(planets.getClimate());
+                planetsViewHolder.gravity.setText(planets.getGravity());
+                planetsViewHolder.terrain.setText(planets.getTerrain());
+                planetsViewHolder.surfaceWater.setText(planets.getSurface_water());
+                planetsViewHolder.population.setText(planets.getPopulation());
+                planetsViewHolder.created.setText(planets.getCreated());
+                planetsViewHolder.edited.setText(planets.getEdited());
+                planetsViewHolder.url.setText(planets.getUrl());
 
-        planetsViewHolder.tableLayout.setVisibility(View.GONE);
+                planetsViewHolder.tableLayout.setVisibility(View.GONE);
 
-        if(currentPosition==position)
-        {
-            Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
-            planetsViewHolder.tableLayout.setVisibility(View.VISIBLE);
-            planetsViewHolder.tableLayout.setAnimation(slideDown);
+                if(currentPosition==position)
+                {
+                    Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
+                    planetsViewHolder.tableLayout.setVisibility(View.VISIBLE);
+                    planetsViewHolder.tableLayout.setAnimation(slideDown);
+                }
+
+                planetsViewHolder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentPosition=position;
+
+                        notifyDataSetChanged();
+                    }
+                });
+                break;
+            case LOADING:
+                break;
+
         }
-
-        planetsViewHolder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentPosition=position;
-
-                notifyDataSetChanged();
-            }
-        });
 
     }
 
     @Override
     public int getItemCount() {
-       return planetsList.size();
+        return planetsList==null? 0: planetsList.size();
     }
 
-    public void addItem(List<Planets> planets){
-        planetsList.addAll(planets);
-        notifyItemInserted(getItemCount()-1);
+    @Override
+    public int getItemViewType(int position) {
+        return (position==planetsList.size()-1&&isLoadingAdded)?LOADING:ITEM;
     }
+
+    public void add(Planets p) {
+        planetsList.add(p);
+        notifyItemInserted(getItemCount() - 1);
+    }
+
+    public void addAll(List<Planets> planets) {
+        for (Planets p : planets) {
+            add(p);
+        }
+    }
+
+    public void remove(Planets planets) {
+        int position = planetsList.indexOf(planets);
+        if (position > -1) {
+            planetsList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        isLoadingAdded = false;
+        while (getItemCount() > 0) {
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new Planets());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+
+        int position = planetsList.size() - 1;
+        Planets item = getItem(position);
+
+        if (item != null) {
+            planetsList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public Planets getItem(int position) {
+        return planetsList.get(position);
+    }
+
 
     class PlanetsViewHolder extends RecyclerView.ViewHolder{
         TextView name, rotationPeriod, orbitalPeriod, diameter, climate, gravity, terrain, surfaceWater, population, created, edited, url;
@@ -101,5 +193,14 @@ public class PlanetsAdapter extends RecyclerView.Adapter<PlanetsAdapter.PlanetsV
             url=itemView.findViewById(R.id.url);
             tableLayout=itemView.findViewById(R.id.tableLayout3);
         }
+    }
+    protected class LoadingVH extends RecyclerView.ViewHolder {
+
+        public LoadingVH(View itemView) {
+
+            super(itemView);
+
+        }
+
     }
 }

@@ -55,7 +55,19 @@ public class PeopleActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(peopleAdapter);
 
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+
+            public void run() {
+
+                loadFirstPage();
+
+            }
+
+        }, 1000);
 
         recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override
@@ -97,20 +109,7 @@ public class PeopleActivity extends AppCompatActivity {
 
         // mocking network delay for API call
 
-       new Handler().postDelayed(new Runnable() {
-
-            @Override
-
-            public void run() {
-
-                loadFirstPage();
-
-            }
-
-        }, 1000);
         api = ApiClient.getClient().create(Api.class);
-        loadFirstPage();
-        recyclerView.setAdapter(peopleAdapter);
     }
 
 
@@ -132,7 +131,8 @@ public class PeopleActivity extends AppCompatActivity {
                     List<People> people = fetchResults(response);
                     progressBar.setVisibility(View.GONE);
                     peopleAdapter.addAll(people);
-                    if (currentPage <= TOTAL_PAGES) peopleAdapter.addLoadingFooter();
+                    if (currentPage <= TOTAL_PAGES)
+                        peopleAdapter.addLoadingFooter();
                     else isLastPage = true;
                 }
                 catch (Exception e)
@@ -152,14 +152,20 @@ public class PeopleActivity extends AppCompatActivity {
         peopleResponseCall().enqueue(new Callback<PeopleResponse>() {
             @Override
             public void onResponse(Call<PeopleResponse> call, Response<PeopleResponse> response) {
-                peopleAdapter.removeLoadingFooter();
-                isLoading = false;
+                try {
+                    peopleAdapter.removeLoadingFooter();
+                    isLoading = false;
 
-                List<People> peopleList =fetchResults(response);
-                peopleAdapter.addAll(peopleList);
+                    List<People> peopleList = fetchResults(response);
+                    peopleAdapter.addAll(peopleList);
 
-                if (currentPage != TOTAL_PAGES) peopleAdapter.addLoadingFooter();
-                else isLastPage = true;
+                    if (currentPage != TOTAL_PAGES) peopleAdapter.addLoadingFooter();
+                    else isLastPage = true;
+                }
+                catch (NullPointerException e)
+                {
+                    e.getMessage();
+                }
             }
 
             @Override

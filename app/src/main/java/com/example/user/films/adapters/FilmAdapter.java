@@ -16,11 +16,13 @@ import com.example.user.films.R;
 
 import java.util.List;
 
-public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder> {
+public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
     private List<Films> filmsList;
     private Context context;
-
+    private boolean isLoadingAdded = false;
     private static int currentPosition=0;
 
     public FilmAdapter(List<Films> filmsList, Context context) {
@@ -30,48 +32,132 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
 
     @NonNull
     @Override
-    public FilmViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_films,viewGroup,false);
-        return new FilmViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        RecyclerView.ViewHolder viewHolder=null;
+        LayoutInflater layoutInflater=LayoutInflater.from(viewGroup.getContext());
+
+        switch (viewType)
+        {
+            case ITEM:
+                viewHolder=getViewHolder(viewGroup,layoutInflater);
+                break;
+            case LOADING:
+                View v2 = layoutInflater.inflate(R.layout.item_progress, viewGroup, false);
+                viewHolder = new LoadingVH(v2);
+                break;
+        }
+        return viewHolder;
+    }
+    @NonNull
+    private RecyclerView.ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
+
+        RecyclerView.ViewHolder viewHolder;
+        View v1 = inflater.inflate(R.layout.list_item_films, parent, false);
+        viewHolder = new FilmViewHolder(v1);
+        return viewHolder;
+
     }
 
     @Override
-    public void onBindViewHolder(final FilmViewHolder filmViewHolder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         Films films=filmsList.get(position);
-        filmViewHolder.title.setText(films.getTitle());
-        filmViewHolder.episodeId.setText(films.getEpisode_id());
-        filmViewHolder.opening.setText(films.getOpening_crawl());
-        filmViewHolder.director.setText(films.getDirector());
-        filmViewHolder.producer.setText(films.getProducer());
-        filmViewHolder.releaseDate.setText(films.getRelease_date());
-        filmViewHolder.created.setText(films.getCreated());
-        filmViewHolder.edited.setText(films.getEdited());
-        filmViewHolder.url.setText(films.getUrl());
+        switch (getItemViewType(position)){
+            case ITEM:
+                FilmViewHolder filmViewHolder=(FilmViewHolder)holder;
+                filmViewHolder.title.setText(films.getTitle());
+                filmViewHolder.episodeId.setText(films.getEpisode_id());
+                filmViewHolder.opening.setText(films.getOpening_crawl());
+                filmViewHolder.director.setText(films.getDirector());
+                filmViewHolder.producer.setText(films.getProducer());
+                filmViewHolder.releaseDate.setText(films.getRelease_date());
+                filmViewHolder.created.setText(films.getCreated());
+                filmViewHolder.edited.setText(films.getEdited());
+                filmViewHolder.url.setText(films.getUrl());
 
 
-        filmViewHolder.tableLayout.setVisibility(View.GONE);
+                filmViewHolder.tableLayout.setVisibility(View.GONE);
 
-        if(currentPosition==position) {
-            Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
+                if(currentPosition==position) {
+                    Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
 
-            filmViewHolder.tableLayout.setVisibility(View.VISIBLE);
+                    filmViewHolder.tableLayout.setVisibility(View.VISIBLE);
 
-            filmViewHolder.tableLayout.startAnimation(slideDown);
+                    filmViewHolder.tableLayout.startAnimation(slideDown);
+                }
+
+                filmViewHolder.title.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentPosition=position;
+
+                        notifyDataSetChanged();
+                    }
+                });
+                break;
+            case LOADING:
+                break;
         }
 
-        filmViewHolder.title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentPosition=position;
-
-               notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        return filmsList.size();
+        return filmsList==null? 0 : filmsList.size();
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return (position==filmsList.size()-1&&isLoadingAdded)?LOADING:ITEM;
+    }
+
+    public void add(Films film) {
+        filmsList.add(film);
+        notifyItemInserted(getItemCount() - 1);
+    }
+
+    public void addAll(List<Films> films) {
+        for (Films films1 : films) {
+            add(films1);
+        }
+    }
+
+    public void remove(Films films) {
+        int position = filmsList.indexOf(films);
+        if (position > -1) {
+            filmsList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        isLoadingAdded = false;
+        while (getItemCount() > 0) {
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new Films());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+
+        int position = filmsList.size() - 1;
+        Films item = getItem(position);
+
+        if (item != null) {
+            filmsList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public Films getItem(int position) {
+        return filmsList.get(position);
     }
 
     class FilmViewHolder extends RecyclerView.ViewHolder {
@@ -100,4 +186,14 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmViewHolder
             tableLayout=(TableLayout)itemView.findViewById(R.id.tableLayout);
         }
     }
+    protected class LoadingVH extends RecyclerView.ViewHolder {
+
+        public LoadingVH(View itemView) {
+
+            super(itemView);
+
+        }
+
+    }
+
 }
