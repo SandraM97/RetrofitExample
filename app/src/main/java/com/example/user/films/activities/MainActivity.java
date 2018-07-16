@@ -14,12 +14,14 @@ import android.widget.Toast;
 import com.example.user.films.Api;
 import com.example.user.films.ApiClient;
 import com.example.user.films.PaginationScrollListener;
+import com.example.user.films.adapters.CharactersAdapter;
 import com.example.user.films.adapters.FilmAdapter;
 import com.example.user.films.response.FilmResponse;
 import com.example.user.films.Films;
 import com.example.user.films.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,7 +31,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     FilmAdapter filmAdapter;
-    RecyclerView recyclerView,Characters;
+    RecyclerView recyclerView;
     List<Films> filmsList=new ArrayList<>();
     ProgressBar progressBar;
     private boolean isLoading = false;
@@ -45,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        Characters=findViewById(R.id.characters);
         filmAdapter=new FilmAdapter(filmsList,this);
         recyclerView.setAdapter(filmAdapter);
+
+
+
 
         api= ApiClient.getClient().create(Api.class);
 
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     List<Films> films=response.body().getResults();
                     progressBar.setVisibility(View.GONE);
                     filmAdapter.addAll(films);
+
                 }
                 catch (NullPointerException e) {
                     e.getMessage();
@@ -83,5 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 }

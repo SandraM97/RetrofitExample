@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.user.films.Films;
 import com.example.user.films.R;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -24,7 +25,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private boolean isLoadingAdded = false;
     private static int currentPosition=0;
-    CharactersAdapter charactersAdapter;
+    private CharactersAdapter charactersAdapter;
 
     public FilmAdapter(List<Films> filmsList, Context context) {
         this.filmsList = filmsList;
@@ -74,6 +75,8 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 filmViewHolder.created.setText(films.getCreated());
                 filmViewHolder.edited.setText(films.getEdited());
                 filmViewHolder.url.setText(films.getUrl());
+                charactersAdapter=new CharactersAdapter(films.getCharacters(),context);
+                filmViewHolder.characters.setAdapter(charactersAdapter);
 
                 filmViewHolder.tableLayout.setVisibility(View.GONE);
 
