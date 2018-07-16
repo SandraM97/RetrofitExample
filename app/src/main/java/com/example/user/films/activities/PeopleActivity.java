@@ -64,7 +64,6 @@ public class PeopleActivity extends AppCompatActivity {
             public void run() {
 
                 loadFirstPage();
-
             }
 
         }, 1000);
@@ -111,7 +110,6 @@ public class PeopleActivity extends AppCompatActivity {
 
         api = ApiClient.getClient().create(Api.class);
     }
-
 
     private Call<PeopleResponse> peopleResponseCall() {
         return api.getPeople(currentPage);

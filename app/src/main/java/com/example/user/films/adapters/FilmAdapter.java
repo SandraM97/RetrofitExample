@@ -24,6 +24,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private boolean isLoadingAdded = false;
     private static int currentPosition=0;
+    CharactersAdapter charactersAdapter;
 
     public FilmAdapter(List<Films> filmsList, Context context) {
         this.filmsList = filmsList;
@@ -73,7 +74,6 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 filmViewHolder.created.setText(films.getCreated());
                 filmViewHolder.edited.setText(films.getEdited());
                 filmViewHolder.url.setText(films.getUrl());
-
 
                 filmViewHolder.tableLayout.setVisibility(View.GONE);
 
@@ -177,12 +177,11 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             url=(TextView)itemView.findViewById(R.id.url);
 
 
-            /*characters=(RecyclerView)itemView.findViewById(R.id.characters);
+            characters=(RecyclerView)itemView.findViewById(R.id.characters);
             planets=(RecyclerView)itemView.findViewById(R.id.planets);
             starships=(RecyclerView)itemView.findViewById(R.id.starships);
             vehicles=(RecyclerView)itemView.findViewById(R.id.vehicles);
             species=(RecyclerView)itemView.findViewById(R.id.species);
-*/
             tableLayout=(TableLayout)itemView.findViewById(R.id.tableLayout);
         }
     }
